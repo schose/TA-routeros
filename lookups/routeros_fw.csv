@@ -1,0 +1,7 @@
+vendor_action,action
+drop,blocked
+dropped,blocked
+blocked,blocked
+accepted,allowed
+allowed,allowed
+accept,allowed
