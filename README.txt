@@ -1,27 +1,37 @@
 # Technology Add-On for Mikrotik Routeros
 
 The Splunk Technology Add-On for Mikrotik RouterOS provides extractions and CIM normalization for Mikrotik RouterOS devices.
-CIM Datamodels network traffic, name resolution (DNS) and DHCP are used.
+CIM Datamodels network traffic, name resolution (DNS), DHCP and authentication are used.
 
 ## Activation of Loging Using Mikrotik RouterOS
 
 To activate logging of RouterOS events activate Syslog logging. Use a Syslog Server or activate a UDP input on Splunk Forwarder.
 
-To activate Logging
-<ul>
-<li>start the router
-<li>bla
-<li>bla
-</ul>
+To activate Logging use the CLI
 
+- create a logging action
+/system logging action
+add name=syslogbw remote=1.2.3.4 remote-port=5200 src-address=2.3.4.5 target=remote
 
-As soon as configured the logfile will be created and look similar to this:
-<pre>
-Dec 15 23:59:59 192.168.61.1 firewall,info forward: in:bridge-batchworks(ether4) out:ether1, src-mac 68:05:ca:2b:3d:1a, proto UDP, 192.168.61.198:59870->172.217.16.78:443, len 1378
-Dec 15 23:59:36 192.168.61.1 dns,packet id:5e6b rd:1 tc:0 aa:0 qr:1 ra:1 QUERY 'name error'
-Dec 15 23:59:36 192.168.61.1 dns query from 192.168.61.198: #3463 _kerberos._tcp.dc._msdcs.bwlab.loc. UNKNOWN (33)
-Dec 15 22:58:18 192.168.61.1 dhcp,info dhcp-public deassigned 192.168.63.196 from 6C:8D:C1:2C:67:B3
-</pre>
+- create a Logging profile
+/system logging
+set 0 topics=info,!firewall
+add action=syslog topics=info
+add action=syslog topics=warning
+add action=syslog topics=critical
+add action=syslog topics=error
+add action=syslog topics=dns,!debug
+
+## firewall logging
+
+You need to enable logging on every rule you want to analyse. You need to specify a rulename and an action. Action need to be "drop" or "accept".
+use "log=yes log-prefix="rulename drop|accept" when creating a rule.
+
+here is an example for a drop rule:
+add action=drop chain=input connection-nat-state=!dstnat connection-state=new in-interface=ether1 log=yes log-prefix="input_wan drop"
+
+this is an example for a forward rule:
+add action=accept chain=forward dst-address=0.0.0.0/0 in-interface=mynet log=yes log-prefix="fwd_bw_internet accept" out-interface=ether1 src-address=192.168.1.0/24
 
 ## Installation and Deployment of TA-routeros
 
@@ -35,7 +45,6 @@ sourcetype = routeros
 host_segment = 5
 disabled = 0
 </pre>
-
 
 Verify the data input and extraction works by searching for
 
