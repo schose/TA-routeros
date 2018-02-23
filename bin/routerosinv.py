@@ -1,6 +1,26 @@
+import xml
+import time
+import sys
+import socket
+import threading
+import subprocess
+import logging
+import xml.dom.minidom, xml.sax.saxutils
+import datetime
 import json
 import sys
+import logging
 from routeros import login
+
+# set up logging suitable for splunkd comsumption
+logging.root
+logging.root.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logging.root.addHandler(handler)
+
+from Queue import Queue
 
 SCHEME = """<scheme>
     <title>Mikrotik Routeros</title>
@@ -12,21 +32,28 @@ SCHEME = """<scheme>
             <arg name="name">
                 <title>Connection Name</title>
                 <description>e.g. Name or Location of the RouterOS device</description>
-                <validation>is_string('name')</validation>
             </arg>
             
             <arg name="ROUTEROS_IP">
-                <title>ROUTEROS_IP</title>
+                <title>Routeros IP</title>
                 <description>IP OR FQDN of your RouterOS Device</description>
             </arg>
             
             <arg name="ROUTEROS_PORT">
-                <title>ROUTEROS_PORT</title>
+                <title>Routeros Port</title>
                 <data_type>number</data_type>
-                <description>Port where your RouterOS Device is reachable - default: 8291</description>
-                <validation>is_port('ROUTEROS_PORT')</validation>
+                <description>Port where your RouterOS API Port is reachable - default: 8728 - this is not winbox port!!!</description>
             </arg>
-                        
+
+            <arg name="ROUTEROS_USERNAME">
+                <title>Username</title>
+                <description>Username for your RouterOS Device</description>
+            </arg>
+
+            <arg name="ROUTEROS_PASSWORD">
+                <title>Password</title>
+                <description>Username for your RouterOS Device</description>
+            </arg>
         </args>
     </endpoint>
 </scheme>
@@ -67,14 +94,46 @@ def get_validation_data():
 
 
 def validate_arguments():
-    val_dataa = get_validation_data()
-    #logging.debug("validate: using fritzbox %s on port %d", val_data["FB_IP"], val_data["FB_PORT"])
+    #logging.debug("before validate function")
+    #val_data = get_validation_data()
+    #val_dataa = get_validation_data()
+    testme = ()
+    #logging.debug("validate: using routeros device %s on port %s using username %s password %s ", val_dataa["ROUTEROS_IP"], val_dataa["ROUTEROS_PORT"], val_dataa["ROUTEROS_USERNAME"], val_dataa["ROUTEROS_PASSWORD"])
+    #print("validate: using routeros device %s on port %d using username %s password %s ", val_data["ROUTEROS_PASSWORD"])
 
 def usage():
     print "usage: %s [--scheme|--validate-arguments]"
     sys.exit(2)
 
+def getdata():
+    val_data = get_validation_data()
+    ROUTEROS_IP = val_data["ROUTEROS_IP"]
+    ROUTEROS_PORT = int(val_data["ROUTEROS_PORT"])
+    ROUTEROS_USERNAME = val_data["ROUTEROS_USERNAME"]
+    ROUTEROS_PASSWORD = val_data["ROUTEROS_PASSWORD"] 
 
+    logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
+
+    routeros = login('admin', '', ROUTEROS_IP)
+    mikdata = routeros('/system/resource/print')
+
+    #print mikdata
+
+    perfdata = {
+        "uptime": mikdata[0]["uptime"],
+        "architecture-name": mikdata[0]["architecture-name"],
+        "version": mikdata[0]["version"],
+        "cpu-frequency": mikdata[0]["cpu-frequency"],
+        "free-memory":  mikdata[0]["free-memory"],
+        "total-memory":  mikdata[0]["total-memory"],
+        "free-hdd-space":  mikdata[0]["free-hdd-space"],
+        "total-hdd-space": mikdata[0]["total-hdd-space"],
+        "architecture-name":  mikdata[0]["architecture-name"],
+        "board-name": mikdata[0]["board-name"]
+    }
+
+    json_perfdata = json.dumps(perfdata)
+    print json_perfdata
 #print json.perfdata
 
 if __name__ == '__main__':
@@ -82,8 +141,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == "--scheme":
             do_scheme()
-#        elif sys.argv[1] == "--validate-arguments":
-#            validate_arguments()
+        elif sys.argv[1] == "--validate-arguments":
+            validate_arguments()
         elif sys.argv[1] == "--test":
             #print 'No tests for the scheme present'
             do_scheme()
@@ -91,23 +150,5 @@ if __name__ == '__main__':
             usage()
 
     else:
-        routeros = login('admin', '', '192.168.109.3')
-        mikdata = routeros('/system/resource/print')
+        getdata()
 
-        #print mikdata
-
-        perfdata = {
-            "uptime": mikdata[0]["uptime"],
-            "architecture-name": mikdata[0]["architecture-name"],
-            "version": mikdata[0]["version"],
-            "cpu-frequency": mikdata[0]["cpu-frequency"],
-            "free-memory":  mikdata[0]["free-memory"],
-            "total-memory":  mikdata[0]["total-memory"],
-            "free-hdd-space":  mikdata[0]["free-hdd-space"],
-            "total-hdd-space": mikdata[0]["total-hdd-space"],
-            "architecture-name":  mikdata[0]["architecture-name"],
-            "board-name": mikdata[0]["board-name"]
-        }
-
-        json_perfdata = json.dumps(perfdata)
-        print perfdata
