@@ -23,7 +23,7 @@ logging.root.addHandler(handler)
 from Queue import Queue
 
 SCHEME = """<scheme>
-    <title>Mikrotik Routeros Inventory</title>
+    <title>Mikrotik Routeros Interface Stats</title>
     <description>Get data from Mikrotik RouterOS</description>
     <use_external_validation>false</use_external_validation>
     <use_single_instance>false</use_single_instance>
@@ -113,27 +113,43 @@ def getdata():
     ROUTEROS_USERNAME = val_data["ROUTEROS_USERNAME"]
     ROUTEROS_PASSWORD = val_data["ROUTEROS_PASSWORD"]
  
+    #ROUTEROS_PASSWORD = "admin"
+
     logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
 
     routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
-    mikdata = routeros('/system/resource/print')
 
-    perfdata = {
-        "time": datetime.datetime.now().isoformat(),
-        "uptime": mikdata[0]["uptime"],
-        "architecture-name": mikdata[0]["architecture-name"],
-        "version": mikdata[0]["version"],
-        "cpu-frequency": mikdata[0]["cpu-frequency"],
-        "free-memory":  mikdata[0]["free-memory"],
-        "total-memory":  mikdata[0]["total-memory"],
-        "free-hdd-space":  mikdata[0]["free-hdd-space"],
-        "total-hdd-space": mikdata[0]["total-hdd-space"],
-        "architecture-name":  mikdata[0]["architecture-name"],
-        "board-name": mikdata[0]["board-name"]
-    }
+    mikdata = routeros('/interface/getall')
+    for n in range(0, len(mikdata)):
+    
+        perfdatanic = {
+            "time": datetime.datetime.now().isoformat(),
+            "default-name": mikdata[n]["default-name"],
+            "id": mikdata[n][".id"],
+            "actual-mtu": mikdata[n]["actual-mtu"],
+            "disabled": mikdata[n]["disabled"],
+            "rx-byte": mikdata[n]["rx-byte"],
+            "rx-error": mikdata[n]["rx-error"],
+            "rx-drop": mikdata[n]["rx-drop"],
+            "last-link-up-time": mikdata[n]["last-link-up-time"],
+            "type": mikdata[n]["type"],
+            "mac-address": mikdata[n]["mac-address"],
+            "tx-byte": mikdata[n]["tx-byte"],
+            "link-downs": mikdata[n]["link-downs"],
+            "tx-packet": mikdata[n]["tx-packet"],
+            "tx-error": mikdata[n]["tx-error"],
+            "running": mikdata[n]["running"],
+            "tx-drop": mikdata[n]["tx-drop"],
+            "tx-queue-drop": mikdata[n]["tx-queue-drop"],
+            "name": mikdata[n]["name"],
+            "fp-tx-packet": mikdata[n]["fp-tx-packet"],
+            "fp-rx-byte": mikdata[n]["fp-rx-byte"],
+            "mtu": mikdata[n]["mtu"],
+            "fp-rx-packet": mikdata[n]["fp-rx-packet"]
+        }
 
-    json_perfdata = json.dumps(perfdata)
-    print json_perfdata
+        json_perfdatanic = json.dumps(perfdatanic)
+        print json_perfdatanic
 
 if __name__ == '__main__':
 

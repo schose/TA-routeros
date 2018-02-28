@@ -9,7 +9,7 @@
       <param name="ROUTEROS_IP">192.168.109.3</param>
       <param name="ROUTEROS_PORT">8728</param>
       <param name="ROUTEROS_USERNAME">admin</param>
-      <param name="ROUTEROS_PASSWORD"></param>
+      <param name="ROUTEROS_PASSWORD">admin</param>
       <param name="host">router01</param>
       <param name="index">test</param>
       <param name="interval">20</param>
