@@ -113,43 +113,14 @@ def getdata():
     ROUTEROS_USERNAME = val_data["ROUTEROS_USERNAME"]
     ROUTEROS_PASSWORD = val_data["ROUTEROS_PASSWORD"]
  
-    #ROUTEROS_PASSWORD = "admin"
-
     logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
 
     routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
 
     mikdata = routeros('/interface/getall')
-    for n in range(0, len(mikdata)):
     
-        perfdatanic = {
-            "time": datetime.datetime.now().isoformat(),
-            "default-name": mikdata[n]["default-name"],
-            "id": mikdata[n][".id"],
-            "actual-mtu": mikdata[n]["actual-mtu"],
-            "disabled": mikdata[n]["disabled"],
-            "rx-byte": mikdata[n]["rx-byte"],
-            "rx-error": mikdata[n]["rx-error"],
-            "rx-drop": mikdata[n]["rx-drop"],
-            "last-link-up-time": mikdata[n]["last-link-up-time"],
-            "type": mikdata[n]["type"],
-            "mac-address": mikdata[n]["mac-address"],
-            "tx-byte": mikdata[n]["tx-byte"],
-            "link-downs": mikdata[n]["link-downs"],
-            "tx-packet": mikdata[n]["tx-packet"],
-            "tx-error": mikdata[n]["tx-error"],
-            "running": mikdata[n]["running"],
-            "tx-drop": mikdata[n]["tx-drop"],
-            "tx-queue-drop": mikdata[n]["tx-queue-drop"],
-            "name": mikdata[n]["name"],
-            "fp-tx-packet": mikdata[n]["fp-tx-packet"],
-            "fp-rx-byte": mikdata[n]["fp-rx-byte"],
-            "mtu": mikdata[n]["mtu"],
-            "fp-rx-packet": mikdata[n]["fp-rx-packet"]
-        }
-
-        json_perfdatanic = json.dumps(perfdatanic)
-        print json_perfdatanic
+    json_perfdatanic = json.dumps(mikdata)
+    print json_perfdatanic
 
 if __name__ == '__main__':
 
