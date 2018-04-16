@@ -10,7 +10,7 @@ import datetime
 import json
 import sys
 import logging
-from routeros import login
+from librouteros import connect
 
 # set up logging suitable for splunkd comsumption
 logging.root
@@ -115,12 +115,22 @@ def getdata():
  
     logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
 
-    routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
+#    routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
 
+    routeros = connect(username=ROUTEROS_USERNAME, password=ROUTEROS_PASSWORD, host=ROUTEROS_IP)
     mikdata = routeros('/interface/getall')
     
     json_perfdatanic = json.dumps(mikdata)
     print json_perfdatanic
+
+    # outfile = "/opt/splunk/etc/apps/TA-routeros/bin/out.json"
+    # file = open(outfile,"w")
+
+    # for lineout in mikdata:
+    #     file.write(lineout) 
+
+    #file.write(mikdata)
+#    file.close()
 
 if __name__ == '__main__':
 
