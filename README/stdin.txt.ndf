@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<input>
+  <server_host>docloc01</server_host>
+  <server_uri>https://127.0.0.1:8089</server_uri>
+  <session_key>_^jvUyPp7A6YrLLFvixiyAY7tsyvuqOYugB9Z1RAqoLXfw_oEGT5z9pK7tEV3YYXAVEgaSe38jRdaroMdoXCgVPzS9suzUvS0dNy2Eg8co8JeKjB7Lpz1dS</session_key>
+  <checkpoint_dir>/opt/splunk/var/lib/splunk/modinputs/avmfb</checkpoint_dir>
+  <configuration>
+    <stanza name="routerosint://officedd">
+      <param name="ROUTEROS_IP">192.168.109.3</param>
+      <param name="ROUTEROS_PORT">8728</param>
+      <param name="ROUTEROS_USERNAME">readonly</param>
+      <param name="ROUTEROS_PASSWORD">metrics4me+1</param>
+      <param name="host">router01</param>
+      <param name="index">test</param>
+      <param name="interval">20</param>
+      <param name="sourcetype">routeros:inventory</param>
+    </stanza>
+  </configuration>
+</input>
+
+

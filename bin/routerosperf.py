@@ -23,8 +23,8 @@ logging.root.addHandler(handler)
 from Queue import Queue
 
 SCHEME = """<scheme>
-    <title>Mikrotik Routeros Inventory</title>
-    <description>Get data from Mikrotik RouterOS</description>
+    <title>Mikrotik Routeros Performance</title>
+    <description>Get performance data from Mikrotik RouterOS</description>
     <use_external_validation>false</use_external_validation>
     <use_single_instance>false</use_single_instance>
     <endpoint>
@@ -120,14 +120,9 @@ def getdata():
 
     perfdata = {
         "time": datetime.datetime.now().isoformat(),
-        "uptime": mikdata[0]["uptime"],
-        "architecture-name": mikdata[0]["architecture-name"],
-        "version": mikdata[0]["version"],
-        "cpu-frequency": mikdata[0]["cpu-frequency"],
-        "total-memory":  mikdata[0]["total-memory"],
-        "total-hdd-space": mikdata[0]["total-hdd-space"],
-        "architecture-name":  mikdata[0]["architecture-name"],
-        "board-name": mikdata[0]["board-name"]
+        "cpupct": mikdata[0]["cpu-load"],
+        "fmem":  mikdata[0]["free-memory"],
+        "fhdd":  mikdata[0]["free-hdd-space"],
     }
 
     json_perfdata = json.dumps(perfdata)
