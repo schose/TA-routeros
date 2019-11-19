@@ -1,4 +1,0 @@
-[submodule "TA-routeros"]
-	path = TA-routeros
-	url = https://git.batchworks.de/andreas/TA-routeros.git
-	branch = master
