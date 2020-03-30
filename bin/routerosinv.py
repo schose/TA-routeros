@@ -52,7 +52,7 @@ SCHEME = """<scheme>
 
             <arg name="ROUTEROS_PASSWORD">
                 <title>Password</title>
-                <description>Username for your RouterOS Device</description>
+                <description>Password for your RouterOS Device</description>
             </arg>
         </args>
     </endpoint>
