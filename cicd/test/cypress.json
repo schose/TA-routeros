@@ -1,0 +1,15 @@
+{
+    "baseUrl": "http://192.168.105.246:8000",
+    "base_api": "https://192.168.105.246:8089",
+    "env": {
+      "cmc_uri": "/en-US/app/search",
+      "splunk_user": "admin",
+      "splunk_password": "Password01"
+    },
+    "defaultCommandTimeout": 40000,
+    "viewportWidth": 1000,
+    "viewportHeight": 1200,
+    "chromeWebSecurity": false,
+    "screenShotOnFailure": false
+}
+

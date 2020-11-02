@@ -1,3 +1,4 @@
+from __future__ import print_function
 import xml
 import time
 import sys
@@ -20,7 +21,7 @@ handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logging.root.addHandler(handler)
 
-from Queue import Queue
+#from Queue import Queue
 
 SCHEME = """<scheme>
     <title>Mikrotik Routeros Performance</title>
@@ -61,7 +62,7 @@ SCHEME = """<scheme>
 
 def do_scheme():
 
-    print SCHEME
+    print(SCHEME)
 
 def get_validation_data():
     val_data = {}
@@ -102,7 +103,7 @@ def validate_arguments():
     #print("validate: using routeros device %s on port %d using username %s password %s ", val_data["ROUTEROS_PASSWORD"])
 
 def usage():
-    print "usage: %s [--scheme|--validate-arguments]"
+    print("usage: %s [--scheme|--validate-arguments]")
     sys.exit(2)
 
 def getdata():
@@ -126,7 +127,7 @@ def getdata():
     }
 
     json_perfdata = json.dumps(perfdata)
-    print json_perfdata
+    print(json_perfdata)
 
 if __name__ == '__main__':
 
