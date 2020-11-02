@@ -2,3 +2,8 @@
 
 - updated librouteros from https://github.com/luqasz/librouteros/tree/2.x/librouteros to have compability to RouterOS v6.45.1 upwards
 - removed routeros libs from bin
+
+## v0.9
+
+- works with python3 as default
+- testet on splunk 8.1

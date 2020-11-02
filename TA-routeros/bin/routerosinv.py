@@ -1,3 +1,4 @@
+from __future__ import print_function
 import xml
 import time
 import sys
@@ -20,10 +21,10 @@ handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logging.root.addHandler(handler)
 
-from Queue import Queue
+#from Queue import Queue
 
 SCHEME = """<scheme>
-    <title>Mikrotik Routeros Interface Stats</title>
+    <title>Mikrotik Routeros Inventory</title>
     <description>Get data from Mikrotik RouterOS</description>
     <use_external_validation>false</use_external_validation>
     <use_single_instance>false</use_single_instance>
@@ -61,7 +62,7 @@ SCHEME = """<scheme>
 
 def do_scheme():
 
-    print SCHEME
+    print(SCHEME)
 
 def get_validation_data():
     val_data = {}
@@ -102,7 +103,7 @@ def validate_arguments():
     #print("validate: using routeros device %s on port %d using username %s password %s ", val_data["ROUTEROS_PASSWORD"])
 
 def usage():
-    print "usage: %s [--scheme|--validate-arguments]"
+    print("usage: %s [--scheme|--validate-arguments]")
     sys.exit(2)
 
 def getdata():
@@ -115,22 +116,23 @@ def getdata():
  
     logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
 
-#    routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
-
     routeros = connect(username=ROUTEROS_USERNAME, password=ROUTEROS_PASSWORD, host=ROUTEROS_IP)
-    mikdata = routeros('/interface/getall')
-    
-    json_perfdatanic = json.dumps(mikdata)
-    print json_perfdatanic
+    mikdata = routeros('/system/resource/print')
 
-    # outfile = "/opt/splunk/etc/apps/TA-routeros/bin/out.json"
-    # file = open(outfile,"w")
+    perfdata = {
+        "time": datetime.datetime.now().isoformat(),
+        "uptime": mikdata[0]["uptime"],
+        "architecture-name": mikdata[0]["architecture-name"],
+        "version": mikdata[0]["version"],
+        "cpu-frequency": mikdata[0]["cpu-frequency"],
+        "total-memory":  mikdata[0]["total-memory"],
+        "total-hdd-space": mikdata[0]["total-hdd-space"],
+        "architecture-name":  mikdata[0]["architecture-name"],
+        "board-name": mikdata[0]["board-name"]
+    }
 
-    # for lineout in mikdata:
-    #     file.write(lineout) 
-
-    #file.write(mikdata)
-#    file.close()
+    json_perfdata = json.dumps(perfdata)
+    print(json_perfdata)
 
 if __name__ == '__main__':
 

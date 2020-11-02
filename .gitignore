@@ -3,3 +3,4 @@
 outfile*
 test.py
 .DS_Store
+cicd/output/*

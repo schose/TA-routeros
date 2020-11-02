@@ -39,4 +39,3 @@ interval = 300
 * how often routeros in queried in seconds
 sourcetype=routeros:interfaces
 * sourcetype to use
-

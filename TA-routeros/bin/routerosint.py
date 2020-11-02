@@ -1,3 +1,4 @@
+from __future__ import print_function
 import xml
 import time
 import sys
@@ -12,6 +13,7 @@ import sys
 import logging
 from librouteros import connect
 
+
 # set up logging suitable for splunkd comsumption
 logging.root
 #logging.root.setLevel(logging.INFO)
@@ -20,10 +22,10 @@ handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logging.root.addHandler(handler)
 
-from Queue import Queue
+#from Queue import Queue
 
 SCHEME = """<scheme>
-    <title>Mikrotik Routeros Inventory</title>
+    <title>Mikrotik Routeros Interface Stats</title>
     <description>Get data from Mikrotik RouterOS</description>
     <use_external_validation>false</use_external_validation>
     <use_single_instance>false</use_single_instance>
@@ -61,7 +63,7 @@ SCHEME = """<scheme>
 
 def do_scheme():
 
-    print SCHEME
+    print(SCHEME)
 
 def get_validation_data():
     val_data = {}
@@ -98,16 +100,17 @@ def validate_arguments():
     #val_data = get_validation_data()
     #val_dataa = get_validation_data()
     testme = ()
-    #logging.debug("validate: using routeros device %s on port %s using username %s password %s ", val_dataa["ROUTEROS_IP"], val_dataa["ROUTEROS_PORT"], val_dataa["ROUTEROS_USERNAME"], val_dataa["ROUTEROS_PASSWORD"])
-    #print("validate: using routeros device %s on port %d using username %s password %s ", val_data["ROUTEROS_PASSWORD"])
+    #logging.debug("validate: using routeros device %s on port %s using username %s password %s ", \
+# val_dataa["ROUTEROS_IP"], val_dataa["ROUTEROS_PORT"], val_dataa["ROUTEROS_USERNAME"], \
+# val_dataa["ROUTEROS_PASSWORD"])
 
 def usage():
-    print "usage: %s [--scheme|--validate-arguments]"
+    print("usage: %s [--scheme|--validate-arguments]")
     sys.exit(2)
 
 def getdata():
     val_data = get_validation_data()
-    
+
     ROUTEROS_IP = val_data["ROUTEROS_IP"]
     ROUTEROS_PORT = int(val_data["ROUTEROS_PORT"])
     ROUTEROS_USERNAME = val_data["ROUTEROS_USERNAME"]
@@ -115,23 +118,22 @@ def getdata():
  
     logging.info("run: using routeros device %s on port %s using username ", ROUTEROS_IP, ROUTEROS_PORT, ROUTEROS_USERNAME)
 
+#    routeros = login(ROUTEROS_USERNAME, ROUTEROS_PASSWORD, ROUTEROS_IP)
+
     routeros = connect(username=ROUTEROS_USERNAME, password=ROUTEROS_PASSWORD, host=ROUTEROS_IP)
-    mikdata = routeros('/system/resource/print')
+    mikdata = routeros('/interface/getall')
+    
+    json_perfdatanic = json.dumps(mikdata)
+    print(json_perfdatanic)
 
-    perfdata = {
-        "time": datetime.datetime.now().isoformat(),
-        "uptime": mikdata[0]["uptime"],
-        "architecture-name": mikdata[0]["architecture-name"],
-        "version": mikdata[0]["version"],
-        "cpu-frequency": mikdata[0]["cpu-frequency"],
-        "total-memory":  mikdata[0]["total-memory"],
-        "total-hdd-space": mikdata[0]["total-hdd-space"],
-        "architecture-name":  mikdata[0]["architecture-name"],
-        "board-name": mikdata[0]["board-name"]
-    }
+    # outfile = "/opt/splunk/etc/apps/TA-routeros/bin/out.json"
+    # file = open(outfile,"w")
 
-    json_perfdata = json.dumps(perfdata)
-    print json_perfdata
+    # for lineout in mikdata:
+    #     file.write(lineout) 
+
+    #file.write(mikdata)
+#    file.close()
 
 if __name__ == '__main__':
 
