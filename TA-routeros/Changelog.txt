@@ -7,3 +7,8 @@
 
 - works with python3 as default
 - testet on splunk 8.1
+
+## v0.10.0
+
+- removed modular input -> this is replaced by telegraf sourcetype
+- added extractions for CEF firewall logs introduced in routeros v7.19
