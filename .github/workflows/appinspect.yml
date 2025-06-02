@@ -6,24 +6,48 @@ on:
   pull_request:
 
 jobs:
-  appinspect:
-    name: Run Splunk AppInspect
-    runs-on: ubuntu-latest
-
-    container:
-      image: schose/appinspect:latest
+  prepair_appinspect:
+    name: prepair Splunk AppInspect
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+  run_appinspect:
+    name: Run Splunk AppInspect
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install splunk-appinspect
+          pip install jq
+      - name: Set AppInspect options
+        run: |
+          echo "APPINSPECT_OPTIONS='--include-archive --include-contents --include-xml --include-json --include-yaml --include-html'" >> $GITHUB_ENV
+      - name: Create build directory
+        run: |
+          mkdir -p build
+          echo "Build directory created"
       - name: Display hostname and directory contents
         run: |
           hostname
           ls -l
           ls -l build || echo "build directory does not exist yet"
           tar zcfv TA-routeros.tar.gz TA-routeros
-
+          
       - name: Run AppInspect
         run: |
           splunk-appinspect inspect --data-format=json --output-file=build/appinspect.json $APPINSPECT_OPTIONS TA-routeros.tar.gz
