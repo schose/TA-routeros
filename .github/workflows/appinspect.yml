@@ -47,10 +47,10 @@ jobs:
           ls -l
           ls -l build || echo "build directory does not exist yet"
           tar zcfv TA-routeros.tar.gz TA-routeros
-          
+
       - name: Run AppInspect
         run: |
-          splunk-appinspect inspect --data-format=json --output-file=build/appinspect.json $APPINSPECT_OPTIONS TA-routeros.tar.gz
+          splunk-appinspect inspect --data-format=json --output-file=build/appinspect.json TA-routeros.tar.gz
 
       - name: Check for AppInspect errors
         run: |
