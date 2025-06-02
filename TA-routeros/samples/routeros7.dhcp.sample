@@ -1,0 +1,3 @@
+messages-2023-08-07-15.log:Aug  7 15:24:13 192.168.82.1 dhcp,info dhcp-dmz deassigned 192.168.53.27 for 52:54:00:A7:4A:45 w-dc1
+messages-2023-08-08-12.log:Aug  8 12:39:44 192.168.82.1 dhcp,info dhcp-dmz deassigned 192.168.53.58 for 52:54:21:DE:00:F1 build01
+messages-2023-08-08-12.log:Aug  8 12:40:07 192.168.82.1 dhcp,info dhcp-dmz assigned 192.168.53.58 for 52:54:21:DE:00:F1 build01
