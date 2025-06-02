@@ -1,0 +1,54 @@
+name: Splunk AppInspect
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+
+jobs:
+  appinspect:
+    name: Run Splunk AppInspect
+    runs-on: ubuntu-latest
+
+    container:
+      image: schose/appinspect:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Display hostname and directory contents
+        run: |
+          hostname
+          ls -l
+          ls -l build || echo "build directory does not exist yet"
+          tar zcfv TA-routeros.tar.gz TA-routeros
+
+      - name: Run AppInspect
+        run: |
+          splunk-appinspect inspect --data-format=json --output-file=build/appinspect.json $APPINSPECT_OPTIONS TA-routeros.tar.gz
+
+      - name: Check for AppInspect errors
+        run: |
+          if [ $(jq '.summary.error' build/appinspect.json) -gt 0 ]; then
+            echo "Error count is greater than 0"
+            exit 1
+          else
+            echo "No errors"
+          fi
+
+      - name: Check for AppInspect failures
+        run: |
+          if [ $(jq '.summary.failure' build/appinspect.json) -gt 0 ]; then
+            echo "Failure count is greater than 0"
+            exit 1
+          else
+            echo "No failures"
+          fi
+
+      - name: Upload AppInspect report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appinspect-report
+          path: build/appinspect.json
