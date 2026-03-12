@@ -1,3 +1,4 @@
 vendor_action,action
-logged in, success
-login failure, failure
+logged in,success
+logged out,success
+login failure,failure

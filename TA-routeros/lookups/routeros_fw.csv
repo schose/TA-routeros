@@ -7,3 +7,4 @@ accepted,allowed
 allowed,allowed
 allow,allowed
 accept,allowed
+dst-nat,allowed

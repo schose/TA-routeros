@@ -12,3 +12,12 @@
 
 - removed modular input -> this is replaced by telegraf sourcetype
 - added extractions for CEF firewall logs introduced in routeros v7.19
+
+## v0.11.0
+
+- fixed CEF firewall extractions (dst-nat action, dest_interface, src_ip truncation)
+- fixed syslog firewall ICMP extraction for IPv4 and IPv6
+- added CEF DNS extractions with query/response correlation via transaction_id
+- added CEF authentication extractions
+- added CIM Network Resolution and Authentication mapping for routeros:cef
+- fixed lookup conflicts between firewall and authentication actions
